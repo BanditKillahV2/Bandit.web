@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Discord Card</title>
+<title>Discord Frame</title>
 
 <style>
 body {
@@ -16,42 +16,44 @@ body {
   color: white;
 }
 
-/* GLOW WRAPPER */
-.glow-wrap {
+/* ROBLOX-STYLE FRAME WRAPPER */
+.frame-wrap {
   position: relative;
-  border-radius: 20px;
-  padding: 2px;
+  border-radius: 12px;
 }
 
-.glow-wrap::before {
+/* GLOW THAT FOLLOWS FRAME EDGE */
+.frame-wrap::before {
   content: "";
   position: absolute;
   inset: -2px;
-  border-radius: 22px;
+  border-radius: 14px;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg,
-    rgba(88,101,242,0.25) 60deg,
-    transparent 140deg,
-    transparent 360deg
+    rgba(0,0,0,0.0) 0deg,
+    rgba(88,101,242,0.35) 80deg,
+    rgba(0,0,0,0.0) 160deg,
+    rgba(0,0,0,0.0) 360deg
   );
-  animation: spin 8s linear infinite;
-  filter: blur(6px);
-  opacity: 0.6;
+  animation: spin 10s linear infinite;
+  z-index: -1;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* CARD */
-.card {
-  position: relative;
+/* MAIN FRAME */
+.frame {
   width: 720px;
   height: 180px;
-  border-radius: 18px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #111;
+  background: #2b2d30; /* Roblox-like dark UI */
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    0 8px 20px rgba(0,0,0,0.6);
+  position: relative;
 }
 
 /* BANNER */
@@ -60,102 +62,88 @@ body {
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: brightness(0.45);
+  filter: brightness(0.4);
 }
 
-/* CONTENT */
+/* CONTENT LAYER */
 .content {
   position: relative;
   height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* TOP ROW */
+.top {
   display: flex;
   align-items: center;
-  padding: 20px;
-  gap: 16px;
 }
 
-.pfp {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  border: 3px solid rgba(255,255,255,0.15);
-  flex-shrink: 0;
-}
-
-.info {
-  flex: 1;
-}
-
-.name {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.members {
-  font-size: 14px;
-  opacity: 0.85;
-  margin-top: 4px;
-}
-
+/* JOIN BUTTON */
 .join {
   background: #5865F2;
   color: white;
   text-decoration: none;
-  padding: 12px 20px;
-  border-radius: 10px;
+  padding: 10px 18px;
+  border-radius: 6px;
   font-weight: bold;
-  transition: 0.2s;
+  margin-left: 12px; /* moved left slightly */
+  transition: background 0.2s;
 }
 
 .join:hover {
-  transform: scale(1.05);
+  background: #6d78ff;
+}
+
+/* MEMBER COUNT (BOTTOM) */
+.members {
+  font-size: 14px;
+  opacity: 0.9;
+  padding-bottom: 6px; /* spacing from border */
 }
 </style>
 </head>
 
 <body>
 
-<div class="glow-wrap">
-  <div class="card">
+<div class="frame-wrap">
+  <div class="frame">
     <div class="banner" id="banner"></div>
 
     <div class="content">
-      <div class="pfp" id="pfp"></div>
-
-      <div class="info">
-        <div class="name" id="name">Loading…</div>
-        <div class="members" id="members">Fetching data…</div>
+      <div class="top">
+        <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">
+          Join Discord
+        </a>
       </div>
 
-      <a class="join" id="join" target="_blank">Join</a>
+      <div class="members" id="members">
+        Loading…
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
+/* ===== CONFIG ===== */
 const SERVER_ID = "1366447599766339604";
-const INVITE_URL = "https://discord.gg/VH5nBv5nda";
 const BANNER_URL = "https://cdn.discordapp.com/attachments/1394816900718002218/1458583956130758688/62ae72b1657a9543624d9a928f66f9e5.png?ex=69602baa&is=695eda2a&hm=234a84ed14d950e516ecc275257a90a119be78b48bc57b6a0da6918bd37f7ebf&";
-/* ========================================= */
+/* ================== */
 
-document.getElementById("banner").style.backgroundImage = `url(${BANNER_URL})`;
-document.getElementById("join").href = INVITE_URL;
+document.getElementById("banner").style.backgroundImage =
+  `url(${BANNER_URL})`;
 
 fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
   .then(res => res.json())
   .then(data => {
-    document.getElementById("name").textContent = data.name;
-    document.getElementById("pfp").style.backgroundImage =
-      `url(${data.icon_url})`;
-
     document.getElementById("members").textContent =
       `${data.presence_count} online • ${data.members.length} members`;
   })
   .catch(() => {
     document.getElementById("members").textContent =
-      "Unable to load Discord data";
+      "Discord data unavailable";
   });
 </script>
 
