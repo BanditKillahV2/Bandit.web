@@ -5,11 +5,20 @@
 <title>Discord Bar Page</title>
 
 <style>
+/* Prevent selection/copy */
+body, * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+
 body {
   margin: 0;
   height: 100vh;
   width: 100vw;
-  background: url('https://cdn.discordapp.com/attachments/1394816900718002218/1458587247992635412/wp14967468.png?ex=69602ebb&is=695edd3b&hm=6cb539d186fb2916a59bad2f0c71d4cf64ff72e2d879233e5b3823a7e37f982c&') no-repeat center center;
+  background: url('https://cdn.discordapp.com/attachments/1394816900718002218/1458587247992635412/wp14967468.png') no-repeat center center;
   background-size: cover;
   font-family: Arial, sans-serif;
   color: white;
@@ -20,12 +29,12 @@ body {
   position: relative;
 }
 
-/* Discord bar wrapper - centered, see-through */
+/* Discord bar wrapper - see-through */
 .discord-bar-wrapper {
   padding: 6px;
-  border-radius: 12px; /* less round, Roblox style */
-  background: rgba(40, 42, 45, 0.5); /* see-through */
-  backdrop-filter: blur(6px); /* glossy effect */
+  border-radius: 12px;
+  background: rgba(40, 42, 45, 0.5);
+  backdrop-filter: blur(6px);
   position: absolute;
   left: 50%;
   top: 50%;
@@ -39,8 +48,8 @@ body {
   align-items: center;
   gap: 16px;
   padding: 14px 24px;
-  border-radius: 12px; /* rectangular */
-  background: rgba(40,42,45,0.4); /* slightly more transparent inside */
+  border-radius: 12px;
+  background: rgba(40,42,45,0.4);
   min-width: 500px;
   max-width: 800px;
 }
@@ -49,7 +58,7 @@ body {
 .icon {
   width: 70px;
   height: 70px;
-  border-radius: 12px; /* rectangle-ish */
+  border-radius: 12px;
   background-size: cover;
   background-position: center;
   border: 2px solid rgba(255,255,255,0.2);
@@ -108,7 +117,7 @@ body {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  width: 350px;  /* bigger images */
+  width: 350px;
   height: 90%;
   display: flex;
   flex-direction: column;
@@ -119,15 +128,9 @@ body {
 }
 
 /* Hide scroll bar */
-.scroll-frame::-webkit-scrollbar {
-  display: none;
-}
-.scroll-frame {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+.scroll-frame::-webkit-scrollbar { display: none; }
+.scroll-frame { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Images inside scroll frame */
 .scroll-frame img {
   width: 100%;
   border-radius: 12px;
@@ -135,10 +138,8 @@ body {
 }
 </style>
 </head>
-
 <body>
 
-<!-- Discord bar -->
 <div class="discord-bar-wrapper">
   <div class="discord-bar">
     <div class="icon" id="icon"></div>
@@ -151,52 +152,26 @@ body {
       </div>
     </div>
 
-    <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">
-      JOIN
-    </a>
+    <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">JOIN</a>
   </div>
 </div>
 
-<!-- Scrollable images on right -->
 <div class="scroll-frame" id="scroll-frame"></div>
 
 <script>
-/* ===== CONFIG ===== */
+/* CONFIG */
 const SERVER_ID = "1366447599766339604";
 const TAB_TITLE = "Bandit | Eclipse ENT";
 const ICON_LINK = "https://discord.gg/VH5nBv5nda";
+const ICON_FALLBACK = "https://i.imgur.com/Wz1Xg4R.png"; // put your own fallback image link here
 const IMAGE_LINKS = [
-  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590422799749171/image.png?ex=696031b0&is=695ee030&hm=6a9ee099292ee92f80b702d1d1cdcce21b369161f13745c940dfe35855736bfe&",
-  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590466823033005/Screenshot_2025-12-19_184412.png?ex=696031ba&is=695ee03a&hm=11d4f3ee2df33c28a77fd200d9b0cd2bd97fd35d401c321085378dfd77f28d1b&",
-  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590706703794268/IMG_1127.jpg?ex=696031f3&is=695ee073&hm=f2a081ccc66e4ad3e9a6d17ba2c8ff1d47f3fafc2c86cd81f73d1b513b03b9c4&"
+  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590422799749171/image.png",
+  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590466823033005/Screenshot_2025-12-19_184412.png",
+  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590706703794268/IMG_1127.jpg"
 ];
-/* ================== */
 
-/* Set tab title */
+/* Tab title */
 document.title = TAB_TITLE;
-
-/* Fetch Discord widget for live member count */
-fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
-  .then(res => res.json())
-  .then(data => {
-    const icon = document.getElementById("icon");
-    icon.style.backgroundImage = `url(${data.icon_url || 'https://via.placeholder.com/70'})`;
-    icon.onclick = () => { window.open(ICON_LINK, "_blank"); };
-
-    document.getElementById("name").textContent = data.name || "Server";
-
-    // Live member count
-    const online = data.presence_count || 0;
-    const total = data.members ? data.members.length : 0;
-    document.getElementById("stats").innerHTML = `
-      <span class="dot"></span>
-      ${online} ONLINE • ${total} MEMBERS
-    `;
-  })
-  .catch(() => {
-    document.getElementById("stats").textContent = "Discord data unavailable";
-    document.getElementById("icon").style.backgroundImage = 'url(https://via.placeholder.com/70)';
-  });
 
 /* Populate scrollable images */
 const scrollFrame = document.getElementById("scroll-frame");
@@ -205,6 +180,28 @@ IMAGE_LINKS.forEach(link => {
   img.src = link;
   scrollFrame.appendChild(img);
 });
+
+/* Fetch Discord widget - use fallback if icon missing */
+fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
+  .then(res => res.json())
+  .then(data => {
+    const icon = document.getElementById("icon");
+    icon.style.backgroundImage = `url(${data.icon_url || ICON_FALLBACK})`;
+    icon.onclick = () => window.open(ICON_LINK, "_blank");
+
+    document.getElementById("name").textContent = data.name || "Server";
+
+    // Live member count
+    const online = data.presence_count || 0;
+    const total = data.members ? data.members.length : 0;
+    document.getElementById("stats").innerHTML = `<span class="dot"></span> ${online} ONLINE • ${total} MEMBERS`;
+  })
+  .catch(() => {
+    const icon = document.getElementById("icon");
+    icon.style.backgroundImage = `url(${ICON_FALLBACK})`;
+    document.getElementById("stats").textContent = "Discord data unavailable";
+    document.getElementById("name").textContent = "Server";
+  });
 </script>
 
 </body>
