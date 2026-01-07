@@ -1,15 +1,48 @@
-<html lang="en"><head><style>body {transition: opacity ease-in 0.2s; } 
-body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
-</style>
+<html lang="en">
+<head>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow-y: auto; /* always allow scrolling */
+    }
+
+    body {
+      transition: opacity ease-in 0.2s;
+      min-height: 100vh;
+    }
+
+    body[unresolved] {
+      opacity: 0;
+      display: block;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* make page feel longer on all devices */
+    .wrap {
+      min-height: 100vh;
+      padding-bottom: 120px; /* adds vertical length */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* push footer down naturally */
+    .card {
+      flex-grow: 1;
+    }
+  </style>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>apple's audio bypasser</title>
   <link rel="stylesheet" href="style.css">
-  <!-- external libs loaded at runtime -->
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><style type="text/css" id="operaUserStyle"></style>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
 </head>
+
 <body>
   <main class="wrap">
     <header class="header">
@@ -17,19 +50,25 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
         <img src="assets/button-style.gif" alt="" class="logo">
         <h1>apple's audio bypasser</h1>
       </div>
-      <p class="subtitle">upload → process ×2.5 speed+pitch → normalize → download mp3s (zip option)</p>
+      <p class="subtitle">
+        upload → process ×2.5 speed+pitch → normalize → download mp3s (zip option)
+      </p>
     </header>
 
     <section class="card">
       <label class="filelabel">
         <div class="filedrop" id="dropzone">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path><path d="M8 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path><rect x="3" y="13" width="18" height="8" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"></rect></svg>
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12 3v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <path d="M8 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+            <rect x="3" y="13" width="18" height="8" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"></rect>
+          </svg>
           <div>
-            <strong>drag &amp; drop audio files here</strong>
+            <strong>drag & drop audio files here</strong>
             <span class="muted">or click to browse (mp3, wav, ogg)</span>
           </div>
         </div>
-        <input id="fileinput" type="file" accept="audio/*" multiple="">
+        <input id="fileinput" type="file" accept="audio/*" multiple>
       </label>
 
       <div class="presets">
@@ -45,24 +84,29 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
         <button id="processBtn" class="btn primary">process files</button>
         <button id="previewBtn" class="btn ghost">preview first file (5s)</button>
         <button id="zipBtn" class="btn alt">download all as zip</button>
-      <button class="btn alt large-compress-btn">if audio file(s) are over 20mb, click to upload them here to compress</button></div>
+        <button class="btn alt large-compress-btn">
+          if audio file(s) are over 20mb, click to upload them here to compress
+        </button>
+      </div>
 
       <div id="filelist" class="filelist"></div>
 
-      <div class="progresswrap" id="progresswrap" hidden="">
+      <div class="progresswrap" id="progresswrap" hidden>
         <div class="progresslabel" id="progresslabel">processing 0 / 0</div>
-        <div class="progressbar"><div id="progress" style="width:0%"></div></div>
+        <div class="progressbar">
+          <div id="progress" style="width:0%"></div>
+        </div>
       </div>
-
     </section>
 
     <footer class="foot">
       <div class="credits">made by apple's entertainment</div>
-      <div class="disclaimer">this is not guaranteed for the audio to stay up! do not blame us for any termination/audio bannings!</div>
+      <div class="disclaimer">
+        this is not guaranteed for the audio to stay up! do not blame us for any termination/audio bannings!
+      </div>
     </footer>
   </main>
 
   <script src="script.js"></script>
-
-
-</body></html>
+</body>
+</html>
