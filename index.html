@@ -8,22 +8,29 @@
 body {
   margin: 0;
   height: 100vh;
+  width: 100vw;
   background: url('https://cdn.discordapp.com/attachments/1394816900718002218/1458587247992635412/wp14967468.png?ex=69602ebb&is=695edd3b&hm=6cb539d186fb2916a59bad2f0c71d4cf64ff72e2d879233e5b3823a7e37f982c&') no-repeat center center;
   background-size: cover;
-  display: flex;
-  justify-content: space-between;
   font-family: Arial, sans-serif;
   color: white;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-/* Discord bar wrapper */
+/* Discord bar wrapper - centered */
 .discord-bar-wrapper {
-  padding: 4px;
-  border-radius: 20px;
+  padding: 6px;
+  border-radius: 25px;
   background: rgba(255,255,255,0.15); /* glossy + opaque */
-  backdrop-filter: blur(10px);
-  margin-left: 20px;
+  backdrop-filter: blur(12px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 /* Discord bar inner pill */
@@ -31,16 +38,17 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px 20px;
+  padding: 14px 24px;
   border-radius: 999px;
-  background: rgba(40,42,45,0.9); /* inner bar */
-  min-width: 480px;
+  background: rgba(40,42,45,0.9);
+  min-width: 500px;
+  max-width: 800px;
 }
 
 /* Server icon clickable */
 .icon {
-  width: 64px;
-  height: 64px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
@@ -58,11 +66,11 @@ body {
 
 .name {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .stats {
-  font-size: 13px;
+  font-size: 14px;
   opacity: 0.85;
   display: flex;
   align-items: center;
@@ -70,8 +78,8 @@ body {
 }
 
 .dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   background: #3ba55d;
   border-radius: 50%;
 }
@@ -82,10 +90,10 @@ body {
   background: #3ba55d;
   color: white;
   text-decoration: none;
-  padding: 10px 18px;
+  padding: 12px 20px;
   border-radius: 999px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 15px;
   transition: transform 0.15s, background 0.15s;
 }
 
@@ -94,16 +102,20 @@ body {
   transform: scale(1.05);
 }
 
-/* Right-side scrollable frame */
+/* Scrollable frame on right */
 .scroll-frame {
-  width: 220px;
-  height: 90%;
-  margin-right: 20px;
-  overflow-y: scroll;
-  padding: 10px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 280px;  /* bigger images */
+  height: 85%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+  overflow-y: scroll;
+  padding: 10px;
+  z-index: 1;
 }
 
 /* Hide scroll bar */
@@ -111,14 +123,14 @@ body {
   display: none;
 }
 .scroll-frame {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Images inside scroll frame */
 .scroll-frame img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 </style>
 </head>
@@ -145,9 +157,7 @@ body {
 </div>
 
 <!-- Scrollable images on right -->
-<div class="scroll-frame" id="scroll-frame">
-  <!-- Images will be added dynamically -->
-</div>
+<div class="scroll-frame" id="scroll-frame"></div>
 
 <script>
 /* ===== CONFIG ===== */
