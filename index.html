@@ -1,105 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Site</title>
+<meta charset="UTF-8">
+<title>Discord Card</title>
 
-  <style>
-    body {
-      margin: 0;
-      background: #0f0f0f;
-      color: white;
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-    }
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: #0b0b0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  color: white;
+}
 
-    /* AUDIO UI */
-    .audio-ui {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.75);
-      padding: 10px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 9999;
-    }
+/* GLOW WRAPPER */
+.glow-wrap {
+  position: relative;
+  border-radius: 20px;
+  padding: 2px;
+}
 
-    /* DISCORD CARD */
-    .discord-card {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 350px;
-      height: 500px;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-      background: #111;
-    }
+.glow-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(88,101,242,0.25) 60deg,
+    transparent 140deg,
+    transparent 360deg
+  );
+  animation: spin 8s linear infinite;
+  filter: blur(6px);
+  opacity: 0.6;
+}
 
-    button {
-      background: #5865F2;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-    input[type="range"] {
-      width: 100px;
-    }
-  </style>
+/* CARD */
+.card {
+  position: relative;
+  width: 720px;
+  height: 180px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #111;
+}
+
+/* BANNER */
+.banner {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.45);
+}
+
+/* CONTENT */
+.content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  gap: 16px;
+}
+
+.pfp {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+}
+
+.name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.members {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+.join {
+  background: #5865F2;
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.join:hover {
+  transform: scale(1.05);
+}
+</style>
 </head>
+
 <body>
 
-  <!-- AUDIO -->
-  <audio id="audio" loop>
-    <source src="song.mp3" type="audio/mpeg">
-  </audio>
+<div class="glow-wrap">
+  <div class="card">
+    <div class="banner" id="banner"></div>
 
-  <div class="audio-ui">
-    <button id="playBtn">▶ Play</button>
-    <input type="range" min="0" max="1" step="0.01" value="0.5" id="volume">
+    <div class="content">
+      <div class="pfp" id="pfp"></div>
+
+      <div class="info">
+        <div class="name" id="name">Loading…</div>
+        <div class="members" id="members">Fetching data…</div>
+      </div>
+
+      <a class="join" id="join" target="_blank">Join</a>
+    </div>
   </div>
+</div>
 
-  <!-- DISCORD SERVER CARD -->
-  <div class="discord-card">
-    <iframe
-      src="https://discord.com/widget?id=1366447599766339604&theme=dark"
-      width="100%"
-      height="100%"
-      allowtransparency="true"
-      frameborder="0"
-      sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-    </iframe>
-  </div>
+<script>
+/* ================= CONFIG ================= */
+const SERVER_ID = "1366447599766339604";
+const INVITE_URL = "https://discord.gg/VH5nBv5nda";
+const BANNER_URL = "https://cdn.discordapp.com/attachments/1394816900718002218/1458583956130758688/62ae72b1657a9543624d9a928f66f9e5.png?ex=69602baa&is=695eda2a&hm=234a84ed14d950e516ecc275257a90a119be78b48bc57b6a0da6918bd37f7ebf&";
+/* ========================================= */
 
-  <script>
-    const audio = document.getElementById("audio");
-    const playBtn = document.getElementById("playBtn");
-    const volume = document.getElementById("volume");
+document.getElementById("banner").style.backgroundImage = `url(${BANNER_URL})`;
+document.getElementById("join").href = INVITE_URL;
 
-    audio.volume = volume.value;
+fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("pfp").style.backgroundImage =
+      `url(${data.icon_url})`;
 
-    volume.addEventListener("input", () => {
-      audio.volume = volume.value;
-    });
-
-    playBtn.addEventListener("click", () => {
-      if (audio.paused) {
-        audio.play();
-        playBtn.textContent = "⏸ Pause";
-      } else {
-        audio.pause();
-        playBtn.textContent = "▶ Play";
-      }
-    });
-  </script>
+    document.getElementById("members").textContent =
+      `${data.presence_count} online • ${data.members.length} members`;
+  })
+  .catch(() => {
+    document.getElementById("members").textContent =
+      "Unable to load Discord data";
+  });
+</script>
 
 </body>
 </html>
