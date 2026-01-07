@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Discord Bar Enhanced</title>
+<title>Discord Bar with Background</title>
 
 <style>
+/* BODY + PAGE BACKGROUND */
 body {
   margin: 0;
   height: 100vh;
-  background: #0b0b0b;
+  background: url('https://cdn.discordapp.com/attachments/1394816900718002218/1458587247992635412/wp14967468.png?ex=69602ebb&is=695edd3b&hm=6cb539d186fb2916a59bad2f0c71d4cf64ff72e2d879233e5b3823a7e37f982c&') no-repeat center center;
+  background-size: cover;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,23 +18,27 @@ body {
   color: white;
 }
 
-/* GLOSSY, TRANSLUCENT PILL FRAME */
+/* FRAME WRAPPER - glossy / see-through */
 .discord-bar-wrapper {
   padding: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05); /* subtle gloss */
-  backdrop-filter: blur(6px); /* see-through glass effect */
+  background: rgba(255,255,255,0.07); /* subtle gloss */
+  backdrop-filter: blur(8px); /* see-through effect */
+  position: relative;
 }
 
+/* MAIN BAR */
 .discord-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 12px 20px;
   border-radius: 999px;
-  background: rgba(40, 42, 45, 0.8); /* slightly darker inner pill */
+  background: rgba(40,42,45,0.85); /* darker inner bar for contrast */
   min-width: 480px;
   max-width: 800px;
+  z-index: 1;
 }
 
 /* ICON */
@@ -43,7 +49,7 @@ body {
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.15); /* subtle stroke around icon */
+  border: 2px solid rgba(255,255,255,0.15);
 }
 
 /* TEXT */
@@ -75,7 +81,7 @@ body {
 
 /* JOIN BUTTON */
 .join {
-  margin-left: 24px;
+  margin-left: auto; /* push to far right */
   background: #3ba55d;
   color: white;
   text-decoration: none;
