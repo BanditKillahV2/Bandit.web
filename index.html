@@ -20,12 +20,12 @@ body {
   position: relative;
 }
 
-/* Discord bar wrapper - centered */
+/* Discord bar wrapper - centered, less rounded */
 .discord-bar-wrapper {
   padding: 6px;
-  border-radius: 25px;
-  background: rgba(255,255,255,0.15); /* glossy + opaque */
-  backdrop-filter: blur(12px);
+  border-radius: 12px; /* less round */
+  background: rgba(40,42,45,0.95); /* mostly opaque */
+  backdrop-filter: blur(4px);
   position: absolute;
   left: 50%;
   top: 50%;
@@ -33,14 +33,14 @@ body {
   z-index: 2;
 }
 
-/* Discord bar inner pill */
+/* Discord bar inner */
 .discord-bar {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 14px 24px;
-  border-radius: 999px;
-  background: rgba(40,42,45,0.9);
+  border-radius: 12px; /* less round */
+  background: rgba(40,42,45,0.95);
   min-width: 500px;
   max-width: 800px;
 }
@@ -49,10 +49,10 @@ body {
 .icon {
   width: 70px;
   height: 70px;
-  border-radius: 50%;
+  border-radius: 12px; /* rectangular-ish */
   background-size: cover;
   background-position: center;
-  border: 2px solid rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.2);
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -91,7 +91,7 @@ body {
   color: white;
   text-decoration: none;
   padding: 12px 20px;
-  border-radius: 999px;
+  border-radius: 12px;
   font-weight: bold;
   font-size: 15px;
   transition: transform 0.15s, background 0.15s;
@@ -108,17 +108,17 @@ body {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  width: 280px;  /* bigger images */
-  height: 85%;
+  width: 320px;  /* bigger images */
+  height: 90%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
   overflow-y: scroll;
   padding: 10px;
   z-index: 1;
 }
 
-/* Hide scroll bar */
+/* Hide scrollbar */
 .scroll-frame::-webkit-scrollbar {
   display: none;
 }
@@ -131,6 +131,7 @@ body {
 .scroll-frame img {
   width: 100%;
   border-radius: 12px;
+  object-fit: cover;
 }
 </style>
 </head>
@@ -179,21 +180,23 @@ fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
   .then(res => res.json())
   .then(data => {
     const icon = document.getElementById("icon");
-    icon.style.backgroundImage = `url(${data.icon_url})`;
+    icon.style.backgroundImage = `url(${data.icon_url || 'https://via.placeholder.com/70'})`;
     icon.onclick = () => { window.open(ICON_LINK, "_blank"); };
 
     document.getElementById("name").textContent = data.name;
 
+    // Use presence_count for live member count
     document.getElementById("stats").innerHTML = `
       <span class="dot"></span>
-      ${data.presence_count} ONLINE • ${data.members.length} MEMBERS
+      ${data.presence_count || 0} ONLINE • ${data.members.length || 0} MEMBERS
     `;
   })
   .catch(() => {
     document.getElementById("stats").textContent = "Discord data unavailable";
+    document.getElementById("icon").style.backgroundImage = 'url(https://via.placeholder.com/70)';
   });
 
-/* Add images to scroll frame */
+/* Populate scrollable images */
 const scrollFrame = document.getElementById("scroll-frame");
 IMAGE_LINKS.forEach(link => {
   const img = document.createElement("img");
