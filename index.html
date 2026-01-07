@@ -2,41 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Audio Volume Slider</title>
+  <title>Audio Test</title>
 
   <style>
     body {
       margin: 0;
       background: #0f0f0f;
       color: white;
+      font-family: Arial, sans-serif;
       height: 100vh;
     }
 
-    /* Volume UI */
     .volume-container {
       position: fixed;
       top: 10px;
       left: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 8px 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 8px 12px;
       border-radius: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-family: Arial, sans-serif;
       z-index: 9999;
-    }
-
-    input[type="range"] {
-      width: 120px;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <!-- Audio -->
-  <audio id="audio" autoplay loop>
+  <audio id="audio" loop preload="auto">
     <source src="song.mp3" type="audio/mpeg">
   </audio>
 
@@ -53,21 +47,24 @@
     >
   </div>
 
+  <h1 style="text-align:center; margin-top:40vh;">
+    Click anywhere to start audio
+  </h1>
+
   <script>
     const audio = document.getElementById("audio");
     const slider = document.getElementById("volumeSlider");
 
-    // Set default volume
     audio.volume = slider.value;
 
-    // Change volume live
     slider.addEventListener("input", () => {
       audio.volume = slider.value;
     });
 
-    // Required for browser autoplay policies
+    // REQUIRED for autoplay
     document.addEventListener("click", () => {
-      audio.play();
+      audio.muted = false;
+      audio.play().catch(err => console.log(err));
     }, { once: true });
   </script>
 
