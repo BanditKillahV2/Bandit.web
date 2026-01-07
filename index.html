@@ -20,6 +20,7 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
+  backdrop-filter: blur(4px); /* Slight blur on background */
 }
 
 /* Discord bar */
@@ -95,7 +96,22 @@ body {
 }
 .scroll-frame::-webkit-scrollbar { display: none; }
 .scroll-frame { -ms-overflow-style: none; scrollbar-width: none; }
-.scroll-frame img { width: 100%; border-radius: 12px; object-fit: cover; }
+
+/* Each image wrapper with blur/gloss effect */
+.image-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(6px);
+  padding: 4px; /* slight inner spacing for glossy effect */
+}
+.image-wrapper img {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  object-fit: cover;
+}
 </style>
 </head>
 <body>
@@ -126,12 +142,17 @@ const IMAGE_LINKS = [
 
 document.title = TAB_TITLE;
 
-/* Populate scroll images */
+/* Populate scroll images with blurred wrappers */
 const scrollFrame = document.getElementById("scroll-frame");
 IMAGE_LINKS.forEach(link => {
+  const wrapper = document.createElement("div");
+  wrapper.className = "image-wrapper";
+
   const img = document.createElement("img");
   img.src = link;
-  scrollFrame.appendChild(img);
+
+  wrapper.appendChild(img);
+  scrollFrame.appendChild(wrapper);
 });
 
 /* Fetch Discord widget */
