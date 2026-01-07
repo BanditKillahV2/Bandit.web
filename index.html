@@ -20,12 +20,12 @@ body {
   position: relative;
 }
 
-/* Discord bar wrapper - centered, less rounded */
+/* Discord bar wrapper - centered, see-through */
 .discord-bar-wrapper {
   padding: 6px;
-  border-radius: 12px; /* less round */
-  background: rgba(40,42,45,0.95); /* mostly opaque */
-  backdrop-filter: blur(4px);
+  border-radius: 12px; /* less round, Roblox style */
+  background: rgba(40, 42, 45, 0.5); /* see-through */
+  backdrop-filter: blur(6px); /* glossy effect */
   position: absolute;
   left: 50%;
   top: 50%;
@@ -39,8 +39,8 @@ body {
   align-items: center;
   gap: 16px;
   padding: 14px 24px;
-  border-radius: 12px; /* less round */
-  background: rgba(40,42,45,0.95);
+  border-radius: 12px; /* rectangular */
+  background: rgba(40,42,45,0.4); /* slightly more transparent inside */
   min-width: 500px;
   max-width: 800px;
 }
@@ -49,7 +49,7 @@ body {
 .icon {
   width: 70px;
   height: 70px;
-  border-radius: 12px; /* rectangular-ish */
+  border-radius: 12px; /* rectangle-ish */
   background-size: cover;
   background-position: center;
   border: 2px solid rgba(255,255,255,0.2);
@@ -108,7 +108,7 @@ body {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  width: 320px;  /* bigger images */
+  width: 350px;  /* bigger images */
   height: 90%;
   display: flex;
   flex-direction: column;
@@ -118,7 +118,7 @@ body {
   z-index: 1;
 }
 
-/* Hide scrollbar */
+/* Hide scroll bar */
 .scroll-frame::-webkit-scrollbar {
   display: none;
 }
@@ -175,7 +175,7 @@ const IMAGE_LINKS = [
 /* Set tab title */
 document.title = TAB_TITLE;
 
-/* Fetch Discord widget */
+/* Fetch Discord widget for live member count */
 fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
   .then(res => res.json())
   .then(data => {
@@ -183,12 +183,14 @@ fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
     icon.style.backgroundImage = `url(${data.icon_url || 'https://via.placeholder.com/70'})`;
     icon.onclick = () => { window.open(ICON_LINK, "_blank"); };
 
-    document.getElementById("name").textContent = data.name;
+    document.getElementById("name").textContent = data.name || "Server";
 
-    // Use presence_count for live member count
+    // Live member count
+    const online = data.presence_count || 0;
+    const total = data.members ? data.members.length : 0;
     document.getElementById("stats").innerHTML = `
       <span class="dot"></span>
-      ${data.presence_count || 0} ONLINE • ${data.members.length || 0} MEMBERS
+      ${online} ONLINE • ${total} MEMBERS
     `;
   })
   .catch(() => {
