@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Discord Bar Page</title>
 <style>
+/* Prevent selection */
 body, * { user-select: none; cursor: default; }
 
 body {
@@ -21,6 +22,7 @@ body {
   position: relative;
 }
 
+/* Discord bar */
 .discord-bar-wrapper {
   padding: 6px;
   border-radius: 12px;
@@ -44,6 +46,7 @@ body {
   max-width: 800px;
 }
 
+/* Server icon */
 .icon {
   width: 70px;
   height: 70px;
@@ -55,11 +58,13 @@ body {
   cursor: pointer;
 }
 
+/* Text info */
 .info { display: flex; flex-direction: column; justify-content: center; }
 .name { font-weight: bold; font-size: 18px; }
 .stats { font-size: 14px; opacity: 0.85; display: flex; align-items: center; gap: 6px; }
 .dot { width: 8px; height: 8px; background: #3ba55d; border-radius: 50%; }
 
+/* Join button */
 .join {
   margin-left: auto;
   background: #3ba55d;
@@ -73,6 +78,7 @@ body {
 }
 .join:hover { background: #43b581; transform: scale(1.05); }
 
+/* Scroll frame */
 .scroll-frame {
   position: absolute;
   right: 20px;
@@ -113,9 +119,9 @@ const TAB_TITLE = "Bandit | Eclipse ENT";
 const ICON_LINK = "https://discord.gg/VH5nBv5nda";
 const ICON_FALLBACK = "https://i.imgur.com/Wz1Xg4R.png"; // fallback server icon
 const IMAGE_LINKS = [
-  "https://i.imgur.com/5Qv8x5R.png",
-  "https://i.imgur.com/w1Cz1eR.png",
-  "https://i.imgur.com/6t3N8vR.jpg"
+  "https://imgur.com/cFvFiMH",
+  "https://imgur.com/q8Re7kD",
+  "https://imgur.com/1pTLco2"
 ];
 
 document.title = TAB_TITLE;
@@ -138,15 +144,15 @@ fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
 
     document.getElementById("name").textContent = data.name || "Server";
 
-    let online = data.presence_count ?? 0;
-    let total = data.members?.length ?? "?";
-    document.getElementById("stats").innerHTML = `<span class="dot"></span> ${online} ONLINE • ${total} MEMBERS`;
+    // Only show online members
+    const online = data.presence_count ?? 0;
+    document.getElementById("stats").innerHTML = `<span class="dot"></span> ${online} ONLINE`;
   })
   .catch(() => {
     const icon = document.getElementById("icon");
     icon.style.backgroundImage = `url(${ICON_FALLBACK})`;
     document.getElementById("name").textContent = "Server";
-    document.getElementById("stats").textContent = "0 ONLINE • ? MEMBERS";
+    document.getElementById("stats").textContent = "0 ONLINE";
   });
 </script>
 
