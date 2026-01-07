@@ -1,9 +1,9 @@
 :root {
-  --bg1:#202415;
-  --bg2:#25522f;
-  --accent:#39ed54;
-  --glass:rgba(255,255,255,0.06);
-  --muted:#b9aee0;
+  --bg1: #0b1e0f;       /* dark green base */
+  --bg2: #14391e;       /* slightly lighter dark green */
+  --accent: #39ed54;    /* bright green accent */
+  --glass: rgba(255,255,255,0.06);
+  --muted: #95c9a0;     /* muted green text */
 }
 
 *{box-sizing:border-box}
@@ -11,9 +11,9 @@ html,body{
   height:100%;
   margin:0;
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  background: radial-gradient(circle at 10% 10%, rgba(124,58,237,0.12), transparent 10%), 
+  background: radial-gradient(circle at 10% 10%, rgba(57,237,84,0.12), transparent 10%), 
               linear-gradient(180deg,var(--bg1),var(--bg2));
-  color:#efe8ff;
+  color:#d6f8c8;
   text-transform:lowercase;
 }
 body::after{
@@ -34,12 +34,12 @@ body::after{
   height:56px;
   border-radius:12px;
   object-fit:cover;
-  box-shadow:0 0 20px rgba(124, 58, 237, 0.6);
+  box-shadow:0 0 20px rgba(57, 237, 84, 0.6);
   animation:glow 3s ease-in-out infinite alternate;
 }
 @keyframes glow{
-  0%{box-shadow:0 0 10px rgba(124, 58, 237, 0.3);}
-  100%{box-shadow:0 0 25px rgba(167, 139, 250, 0.9);}
+  0%{box-shadow:0 0 10px rgba(57, 237, 84, 0.3);}
+  100%{box-shadow:0 0 25px rgba(101, 255, 143, 0.9);}
 }
 h1{margin:0;font-size:28px;letter-spacing:0.6px}
 .subtitle{margin:0;color:var(--muted);font-size:13px}
@@ -74,13 +74,12 @@ input[type=file]{display:none}
 
 .controls{display:flex;gap:10px;margin-top:14px}
 
-
 .btn,
 .preset {
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
   border: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(10px);
-  box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 0 10px rgba(57,237,84,0.2);
   color: inherit;
   cursor: pointer;
   border-radius: 10px;
@@ -90,21 +89,21 @@ input[type=file]{display:none}
 .btn:hover,
 .preset:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 0 25px rgba(167, 139, 250, 0.9);
-  background: linear-gradient(180deg, rgba(167,139,250,0.15), rgba(124,58,237,0.1));
+  box-shadow: 0 0 25px rgba(101,255,143,0.9);
+  background: linear-gradient(180deg, rgba(101,255,143,0.15), rgba(57,237,84,0.1));
 }
 .btn:active,
 .preset:active {
   transform: translateY(0px) scale(0.98);
-  box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 0 10px rgba(57,237,84,0.3);
 }
 
 .btn.primary {
-  background: linear-gradient(90deg, rgba(124,58,237,0.4), rgba(167,139,250,0.2));
-  border: 1px solid rgba(167,139,250,0.25);
+  background: linear-gradient(90deg, rgba(57,237,84,0.4), rgba(101,255,143,0.2));
+  border: 1px solid rgba(101,255,143,0.25);
 }
 .btn.primary:hover {
-  background: linear-gradient(90deg, rgba(167,139,250,0.3), rgba(124,58,237,0.2));
+  background: linear-gradient(90deg, rgba(101,255,143,0.3), rgba(57,237,84,0.2));
 }
 .btn.alt {
   background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
@@ -125,16 +124,17 @@ input[type=file]{display:none}
 .progresswrap{margin-top:14px}
 .progresslabel{font-size:13px;color:var(--muted);margin-bottom:8px}
 .progressbar{height:10px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden}
-.progressbar > div{height:100%;background:linear-gradient(90deg,var(--accent),#a78bfa);width:0%}
+.progressbar > div{height:100%;background:linear-gradient(90deg,var(--accent),#a8ffba);width:0%}
 
 .foot{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .credits{font-size:13px;color:var(--muted)}
-.disclaimer{font-size:12px;color:#ffd7d7;background:linear-gradient(180deg,rgba(255,0,0,0.03),transparent);padding:8px;border-radius:8px;border:1px solid rgba(255,0,0,0.06)}
+.disclaimer{font-size:12px;color:#d7ffd7;background:linear-gradient(180deg,rgba(0,255,0,0.03),transparent);padding:8px;border-radius:8px;border:1px solid rgba(0,255,0,0.06)}
 
 @media (max-width:700px){
   .controls{flex-direction:column;align-items:stretch}
   .title h1{font-size:20px}
 }
+
 /* ✨ large-file compress button (matches theme) ✨ */
 .large-compress-btn {
   margin-top: 10px;
@@ -145,22 +145,22 @@ input[type=file]{display:none}
   background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
   border: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(10px);
-  color: #d6baff;
+  color: #a6ffc0;
   border-radius: 12px;
   padding: 10px 20px;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 0 10px rgba(124,58,237,0.25);
+  box-shadow: 0 0 10px rgba(57,237,84,0.25);
 }
 
 .large-compress-btn:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 0 25px rgba(167,139,250,0.9);
-  background: linear-gradient(180deg, rgba(167,139,250,0.15), rgba(124,58,237,0.1));
+  box-shadow: 0 0 25px rgba(101,255,143,0.9);
+  background: linear-gradient(180deg, rgba(101,255,143,0.15), rgba(57,237,84,0.1));
   color: #fff;
 }
 
 .large-compress-btn:active {
   transform: translateY(0px) scale(0.97);
-  box-shadow: 0 0 10px rgba(124,58,237,0.3);
+  box-shadow: 0 0 10px rgba(57,237,84,0.3);
 }
