@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Discord Frame</title>
+<title>Discord Bar</title>
 
 <style>
 body {
@@ -16,133 +16,109 @@ body {
   color: white;
 }
 
-/* ROBLOX-STYLE FRAME WRAPPER */
-.frame-wrap {
-  position: relative;
-  border-radius: 12px;
-}
-
-/* GLOW THAT FOLLOWS FRAME EDGE */
-.frame-wrap::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 14px;
-  background: conic-gradient(
-    from 0deg,
-    rgba(0,0,0,0.0) 0deg,
-    rgba(88,101,242,0.35) 80deg,
-    rgba(0,0,0,0.0) 160deg,
-    rgba(0,0,0,0.0) 360deg
-  );
-  animation: spin 10s linear infinite;
-  z-index: -1;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* MAIN FRAME */
-.frame {
-  width: 720px;
-  height: 180px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #2b2d30; /* Roblox-like dark UI */
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.06),
-    0 8px 20px rgba(0,0,0,0.6);
-  position: relative;
-}
-
-/* BANNER */
-.banner {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  filter: brightness(0.4);
-}
-
-/* CONTENT LAYER */
-.content {
-  position: relative;
-  height: 100%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* TOP ROW */
-.top {
+/* DISCORD BAR */
+.discord-bar {
   display: flex;
   align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: transparent; /* NO background */
+}
+
+/* ICON */
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* TEXT */
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.stats {
+  font-size: 12px;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #3ba55d;
+  border-radius: 50%;
 }
 
 /* JOIN BUTTON */
 .join {
-  background: #5865F2;
+  margin-left: 24px;
+  background: #3ba55d;
   color: white;
   text-decoration: none;
-  padding: 10px 18px;
-  border-radius: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
   font-weight: bold;
-  margin-left: 12px; /* moved left slightly */
-  transition: background 0.2s;
+  font-size: 13px;
+  transition: transform 0.15s, background 0.15s;
 }
 
 .join:hover {
-  background: #6d78ff;
-}
-
-/* MEMBER COUNT (BOTTOM) */
-.members {
-  font-size: 14px;
-  opacity: 0.9;
-  padding-bottom: 6px; /* spacing from border */
+  background: #43b581;
+  transform: scale(1.05);
 }
 </style>
 </head>
 
 <body>
 
-<div class="frame-wrap">
-  <div class="frame">
-    <div class="banner" id="banner"></div>
+<div class="discord-bar">
+  <div class="icon" id="icon"></div>
 
-    <div class="content">
-      <div class="top">
-        <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">
-          Join Discord
-        </a>
-      </div>
-
-      <div class="members" id="members">
-        Loading…
-      </div>
+  <div class="info">
+    <div class="name" id="name">Loading…</div>
+    <div class="stats" id="stats">
+      <span class="dot"></span>
+      Loading stats…
     </div>
   </div>
+
+  <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">
+    JOIN
+  </a>
 </div>
 
 <script>
 /* ===== CONFIG ===== */
 const SERVER_ID = "1366447599766339604";
-const BANNER_URL = "https://cdn.discordapp.com/attachments/1394816900718002218/1458583956130758688/62ae72b1657a9543624d9a928f66f9e5.png?ex=69602baa&is=695eda2a&hm=234a84ed14d950e516ecc275257a90a119be78b48bc57b6a0da6918bd37f7ebf&";
 /* ================== */
-
-document.getElementById("banner").style.backgroundImage =
-  `url(${BANNER_URL})`;
 
 fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
   .then(res => res.json())
   .then(data => {
-    document.getElementById("members").textContent =
-      `${data.presence_count} online • ${data.members.length} members`;
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("icon").style.backgroundImage =
+      `url(${data.icon_url})`;
+
+    document.getElementById("stats").innerHTML = `
+      <span class="dot"></span>
+      ${data.presence_count} ONLINE • ${data.members.length} MEMBERS
+    `;
   })
   .catch(() => {
-    document.getElementById("members").textContent =
+    document.getElementById("stats").textContent =
       "Discord data unavailable";
   });
 </script>
