@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Discord Bar</title>
+<title>Discord Bar Enhanced</title>
 
 <style>
 body {
@@ -16,48 +16,59 @@ body {
   color: white;
 }
 
-/* DISCORD BAR */
+/* GLOSSY, TRANSLUCENT PILL FRAME */
+.discord-bar-wrapper {
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05); /* subtle gloss */
+  backdrop-filter: blur(6px); /* see-through glass effect */
+}
+
 .discord-bar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
+  gap: 16px;
+  padding: 12px 20px;
   border-radius: 999px;
-  background: transparent; /* NO background */
+  background: rgba(40, 42, 45, 0.8); /* slightly darker inner pill */
+  min-width: 480px;
+  max-width: 800px;
 }
 
 /* ICON */
 .icon {
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.15); /* subtle stroke around icon */
 }
 
 /* TEXT */
 .info {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .name {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .stats {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 13px;
+  opacity: 0.85;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   background: #3ba55d;
   border-radius: 50%;
 }
@@ -68,10 +79,10 @@ body {
   background: #3ba55d;
   color: white;
   text-decoration: none;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 999px;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 14px;
   transition: transform 0.15s, background 0.15s;
 }
 
@@ -84,20 +95,22 @@ body {
 
 <body>
 
-<div class="discord-bar">
-  <div class="icon" id="icon"></div>
+<div class="discord-bar-wrapper">
+  <div class="discord-bar">
+    <div class="icon" id="icon"></div>
 
-  <div class="info">
-    <div class="name" id="name">Loading…</div>
-    <div class="stats" id="stats">
-      <span class="dot"></span>
-      Loading stats…
+    <div class="info">
+      <div class="name" id="name">Loading…</div>
+      <div class="stats" id="stats">
+        <span class="dot"></span>
+        Loading…
+      </div>
     </div>
-  </div>
 
-  <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">
-    JOIN
-  </a>
+    <a class="join" href="https://discord.gg/VH5nBv5nda" target="_blank">
+      JOIN
+    </a>
+  </div>
 </div>
 
 <script>
