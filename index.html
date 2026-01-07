@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Discord Bar Page</title>
 <style>
-/* Prevent selection */
 body, * { user-select: none; cursor: default; }
 
 body {
@@ -22,7 +21,6 @@ body {
   position: relative;
 }
 
-/* Discord bar */
 .discord-bar-wrapper {
   padding: 6px;
   border-radius: 12px;
@@ -46,7 +44,6 @@ body {
   max-width: 800px;
 }
 
-/* Server icon */
 .icon {
   width: 70px;
   height: 70px;
@@ -58,13 +55,11 @@ body {
   cursor: pointer;
 }
 
-/* Text info */
 .info { display: flex; flex-direction: column; justify-content: center; }
 .name { font-weight: bold; font-size: 18px; }
 .stats { font-size: 14px; opacity: 0.85; display: flex; align-items: center; gap: 6px; }
 .dot { width: 8px; height: 8px; background: #3ba55d; border-radius: 50%; }
 
-/* Join button */
 .join {
   margin-left: auto;
   background: #3ba55d;
@@ -78,7 +73,6 @@ body {
 }
 .join:hover { background: #43b581; transform: scale(1.05); }
 
-/* Scroll frame */
 .scroll-frame {
   position: absolute;
   right: 20px;
@@ -117,16 +111,16 @@ body {
 const SERVER_ID = "1366447599766339604";
 const TAB_TITLE = "Bandit | Eclipse ENT";
 const ICON_LINK = "https://discord.gg/VH5nBv5nda";
-const ICON_FALLBACK = "https://cdn.discordapp.com/attachments/1394816900718002218/1458589746728145009/a_3acc14a24f3854770835859f7c708f3c.webp?ex=6960310e&is=695edf8e&hm=f078298ce8d1d198656669f9a24dfaea1c2148b7f9a82a1d83658f66bf261428&"; // fallback image
+const ICON_FALLBACK = "https://i.imgur.com/Wz1Xg4R.png"; // fallback server icon
 const IMAGE_LINKS = [
-  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590422799749171/image.png",
-  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590466823033005/Screenshot_2025-12-19_184412.png",
-  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590706703794268/IMG_1127.jpg"
+  "https://i.imgur.com/5Qv8x5R.png",
+  "https://i.imgur.com/w1Cz1eR.png",
+  "https://i.imgur.com/6t3N8vR.jpg"
 ];
 
 document.title = TAB_TITLE;
 
-/* Scrollable images */
+/* Populate scroll images */
 const scrollFrame = document.getElementById("scroll-frame");
 IMAGE_LINKS.forEach(link => {
   const img = document.createElement("img");
@@ -144,11 +138,8 @@ fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
 
     document.getElementById("name").textContent = data.name || "Server";
 
-    // Member count fallback
-    let online = 0, total = "?";
-    if(data.presence_count != undefined) online = data.presence_count;
-    if(data.members) total = data.members.length;
-
+    let online = data.presence_count ?? 0;
+    let total = data.members?.length ?? "?";
     document.getElementById("stats").innerHTML = `<span class="dot"></span> ${online} ONLINE • ${total} MEMBERS`;
   })
   .catch(() => {
