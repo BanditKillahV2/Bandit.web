@@ -204,13 +204,13 @@ async function processAll() {
     a.click();
   } else {
     const zip = new JSZip();
-    const folder = zip.folder("apples_audio_bypasser_outputs");
+    const folder = zip.folder("eclipse_audio_bypasser_outputs");
     processed.forEach(p => folder.file(p.name, p.blob));
     const content = await zip.generateAsync({ type: "blob" }, meta => {
       progressbar.style.width = `${Math.floor(meta.percent)}%`;
       progresslabel.textContent = `zipping ${Math.round(meta.percent)}%`;
     });
-    saveAs(content, "apples_audio_bypasser.zip");
+    saveAs(content, "eclipse_audio_bypasser.zip");
     progresslabel.textContent = "zip ready";
   }
 
