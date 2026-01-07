@@ -2,57 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Discord Bar with Background</title>
+<title>Discord Bar Page</title>
 
 <style>
-/* BODY + PAGE BACKGROUND */
 body {
   margin: 0;
   height: 100vh;
   background: url('https://cdn.discordapp.com/attachments/1394816900718002218/1458587247992635412/wp14967468.png?ex=69602ebb&is=695edd3b&hm=6cb539d186fb2916a59bad2f0c71d4cf64ff72e2d879233e5b3823a7e37f982c&') no-repeat center center;
   background-size: cover;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   font-family: Arial, sans-serif;
   color: white;
+  overflow: hidden;
 }
 
-/* FRAME WRAPPER - glossy / see-through */
+/* Discord bar wrapper */
 .discord-bar-wrapper {
   padding: 4px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.07); /* subtle gloss */
-  backdrop-filter: blur(8px); /* see-through effect */
-  position: relative;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15); /* glossy + opaque */
+  backdrop-filter: blur(10px);
+  margin-left: 20px;
 }
 
-/* MAIN BAR */
+/* Discord bar inner pill */
 .discord-bar {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 12px 20px;
   border-radius: 999px;
-  background: rgba(40,42,45,0.85); /* darker inner bar for contrast */
+  background: rgba(40,42,45,0.9); /* inner bar */
   min-width: 480px;
-  max-width: 800px;
-  z-index: 1;
 }
 
-/* ICON */
+/* Server icon clickable */
 .icon {
   width: 64px;
   height: 64px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
-  flex-shrink: 0;
   border: 2px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
-/* TEXT */
+/* Text info */
 .info {
   display: flex;
   flex-direction: column;
@@ -79,9 +76,9 @@ body {
   border-radius: 50%;
 }
 
-/* JOIN BUTTON */
+/* Join button */
 .join {
-  margin-left: auto; /* push to far right */
+  margin-left: auto;
   background: #3ba55d;
   color: white;
   text-decoration: none;
@@ -96,11 +93,39 @@ body {
   background: #43b581;
   transform: scale(1.05);
 }
+
+/* Right-side scrollable frame */
+.scroll-frame {
+  width: 220px;
+  height: 90%;
+  margin-right: 20px;
+  overflow-y: scroll;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Hide scroll bar */
+.scroll-frame::-webkit-scrollbar {
+  display: none;
+}
+.scroll-frame {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Images inside scroll frame */
+.scroll-frame img {
+  width: 100%;
+  border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- Discord bar -->
 <div class="discord-bar-wrapper">
   <div class="discord-bar">
     <div class="icon" id="icon"></div>
@@ -119,17 +144,35 @@ body {
   </div>
 </div>
 
+<!-- Scrollable images on right -->
+<div class="scroll-frame" id="scroll-frame">
+  <!-- Images will be added dynamically -->
+</div>
+
 <script>
 /* ===== CONFIG ===== */
 const SERVER_ID = "1366447599766339604";
+const TAB_TITLE = "Bandit | Eclipse ENT";
+const ICON_LINK = "https://discord.gg/VH5nBv5nda";
+const IMAGE_LINKS = [
+  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590422799749171/image.png?ex=696031b0&is=695ee030&hm=6a9ee099292ee92f80b702d1d1cdcce21b369161f13745c940dfe35855736bfe&",
+  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590466823033005/Screenshot_2025-12-19_184412.png?ex=696031ba&is=695ee03a&hm=11d4f3ee2df33c28a77fd200d9b0cd2bd97fd35d401c321085378dfd77f28d1b&",
+  "https://cdn.discordapp.com/attachments/1394816900718002218/1458590706703794268/IMG_1127.jpg?ex=696031f3&is=695ee073&hm=f2a081ccc66e4ad3e9a6d17ba2c8ff1d47f3fafc2c86cd81f73d1b513b03b9c4&"
+];
 /* ================== */
 
+/* Set tab title */
+document.title = TAB_TITLE;
+
+/* Fetch Discord widget */
 fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
   .then(res => res.json())
   .then(data => {
+    const icon = document.getElementById("icon");
+    icon.style.backgroundImage = `url(${data.icon_url})`;
+    icon.onclick = () => { window.open(ICON_LINK, "_blank"); };
+
     document.getElementById("name").textContent = data.name;
-    document.getElementById("icon").style.backgroundImage =
-      `url(${data.icon_url})`;
 
     document.getElementById("stats").innerHTML = `
       <span class="dot"></span>
@@ -137,9 +180,16 @@ fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`)
     `;
   })
   .catch(() => {
-    document.getElementById("stats").textContent =
-      "Discord data unavailable";
+    document.getElementById("stats").textContent = "Discord data unavailable";
   });
+
+/* Add images to scroll frame */
+const scrollFrame = document.getElementById("scroll-frame");
+IMAGE_LINKS.forEach(link => {
+  const img = document.createElement("img");
+  img.src = link;
+  scrollFrame.appendChild(img);
+});
 </script>
 
 </body>
