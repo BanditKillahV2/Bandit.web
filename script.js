@@ -1,4 +1,4 @@
-// apple's audio bypasser — final fixed wav version w/ time estimate + smooth progress + upload fix
+// apple's audio bypasser — updated for full-height wrapper & smooth UI
 const fileinput = document.getElementById("fileinput");
 const dropzone = document.getElementById("dropzone");
 const filelist = document.getElementById("filelist");
@@ -8,26 +8,23 @@ const progresswrap = document.getElementById("progresswrap");
 const progressbar = document.getElementById("progress");
 const progresslabel = document.getElementById("progresslabel");
 
+let files = [];
+let processed = [];
+let targetDb = -21;
+
 // --- create large-file compression button
 const largeBtn = document.createElement("button");
 largeBtn.textContent = "if audio file(s) are over 20mb, click to upload them here to compress";
 largeBtn.className = "btn alt large-compress-btn";
 largeBtn.onclick = () => window.open("https://cloudconvert.com/wav-to-mp3", "_blank");
 const controlsDiv = document.querySelector(".controls");
-if (controlsDiv) controlsDiv.appendChild(largeBtn);
+if (controlsDiv && !controlsDiv.contains(largeBtn)) controlsDiv.appendChild(largeBtn);
 
-let files = [];
-let processed = [];
-let targetDb = -21;
-
-// --- 🔊 preset buttons fix ---
-document.querySelectorAll(".preset").forEach((btn) => {
+// --- preset buttons ---
+document.querySelectorAll(".preset").forEach(btn => {
   btn.addEventListener("click", () => {
-    // remove active highlight from all
-    document.querySelectorAll(".preset").forEach((b) => b.classList.remove("active"));
-    // highlight the one clicked
+    document.querySelectorAll(".preset").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    // update global target dB
     targetDb = parseFloat(btn.dataset.db);
     console.log("target dB set to", targetDb);
   });
@@ -35,22 +32,24 @@ document.querySelectorAll(".preset").forEach((btn) => {
 
 // --- input handling ---
 dropzone.addEventListener("click", () => fileinput.click());
-fileinput.addEventListener("change", (e) => {
+fileinput.addEventListener("change", e => {
   handleFiles(e.target.files);
-  fileinput.value = ""; // reset so same file can be chosen again
+  fileinput.value = "";
 });
-dropzone.addEventListener("dragover", (e) => e.preventDefault());
-dropzone.addEventListener("drop", (e) => {
+dropzone.addEventListener("dragover", e => e.preventDefault());
+dropzone.addEventListener("drop", e => {
   e.preventDefault();
   handleFiles(e.dataTransfer.files);
 });
 
+// --- handle files ---
 function handleFiles(list) {
-  const arr = Array.from(list).filter((f) => f.type.startsWith("audio/"));
+  const arr = Array.from(list).filter(f => f.type.startsWith("audio/"));
   files = files.concat(arr);
   renderList();
 }
 
+// --- render file list ---
 function renderList() {
   filelist.innerHTML = "";
   files.forEach((f, i) => {
@@ -65,11 +64,13 @@ function renderList() {
         <button class="action-btn remove">remove</button>
         <button class="action-btn download">download</button>
       </div>`;
+    
     row.querySelector(".remove").onclick = () => {
       files.splice(i, 1);
       processed.splice(i, 1);
       renderList();
     };
+    
     row.querySelector(".download").onclick = () => {
       if (!processed[i]) return alert("process the file first");
       const a = document.createElement("a");
@@ -77,6 +78,7 @@ function renderList() {
       a.download = processed[i].name;
       a.click();
     };
+
     filelist.appendChild(row);
   });
 }
@@ -124,9 +126,7 @@ function applyGain(buf, gain) {
     const dst = out.getChannelData(ch);
     for (let i = 0; i < src.length; i++) {
       let v = src[i] * gain;
-      if (v > 1) v = 1;
-      if (v < -1) v = -1;
-      dst[i] = v;
+      dst[i] = Math.max(-1, Math.min(1, v));
     }
   }
   return out;
@@ -154,22 +154,22 @@ function audioBufferToWav(buffer) {
   view.setUint16(34, bitsPerSample, true);
   writeStr(36, "data");
   view.setUint32(40, dataSize, true);
+
   let offset = 44;
   const channels = [];
   for (let c = 0; c < numChannels; c++) channels.push(buffer.getChannelData(c));
   for (let i = 0; i < buffer.length; i++) {
     for (let c = 0; c < numChannels; c++) {
-      let s = Math.max(-1, Math.min(1, channels[c][i]));
-      view.setInt16(offset, s * 0x7fff, true);
+      view.setInt16(offset, channels[c][i] * 0x7fff, true);
       offset += 2;
     }
   }
   return new Blob([ab], { type: "audio/wav" });
 }
 
-// --- processing ---
+// --- process all files ---
 async function processAll() {
-  if (files.length === 0) return alert("no files selected");
+  if (!files.length) return alert("no files selected");
   processed = [];
   progresswrap.hidden = false;
   progressbar.style.transition = "width 0.3s ease";
@@ -178,7 +178,7 @@ async function processAll() {
 
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
-    progresslabel.textContent = `processing ${i + 1} / ${files.length}`;
+    progresslabel.textContent = `processing ${i + 1}/${files.length}`;
     const decoded = await decodeAudio(f);
     const sped = await renderSpedBuffer(decoded, 2.5);
     const peak = getPeak(sped) || 1e-9;
@@ -187,13 +187,8 @@ async function processAll() {
     const finalBuf = applyGain(sped, gainMult);
     const wavBlob = audioBufferToWav(finalBuf);
     const url = URL.createObjectURL(wavBlob);
-    processed.push({
-      name: `${f.name.replace(/\.[^/.]+$/, "")}_x2.5_${targetDb}db.wav`,
-      blob: wavBlob,
-      url,
-    });
-
-    progressbar.style.width = (((i + 1) / files.length) * 100) + "%";
+    processed.push({ name: `${f.name.replace(/\.[^/.]+$/, "")}_x2.5_${targetDb}db.wav`, blob: wavBlob, url });
+    progressbar.style.width = `${((i + 1) / files.length) * 100}%`;
 
     // smooth time estimate
     const elapsed = performance.now() - startTs;
@@ -210,14 +205,11 @@ async function processAll() {
   } else {
     const zip = new JSZip();
     const folder = zip.folder("apples_audio_bypasser_outputs");
-    processed.forEach((p) => folder.file(p.name, p.blob));
-    const content = await zip.generateAsync(
-      { type: "blob" },
-      (meta) => {
-        progressbar.style.width = Math.floor(meta.percent) + "%";
-        progresslabel.textContent = `zipping ${Math.round(meta.percent)}%`;
-      }
-    );
+    processed.forEach(p => folder.file(p.name, p.blob));
+    const content = await zip.generateAsync({ type: "blob" }, meta => {
+      progressbar.style.width = `${Math.floor(meta.percent)}%`;
+      progresslabel.textContent = `zipping ${Math.round(meta.percent)}%`;
+    });
     saveAs(content, "apples_audio_bypasser.zip");
     progresslabel.textContent = "zip ready";
   }
@@ -228,9 +220,9 @@ async function processAll() {
 
 processBtn.onclick = () => processAll();
 
-// --- preview (first 5s) ---
+// --- preview first 5s ---
 previewBtn.onclick = async () => {
-  if (files.length === 0) return alert("no file to preview");
+  if (!files.length) return alert("no file to preview");
   const f = files[0];
   const decoded = await decodeAudio(f);
   const sped = await renderSpedBuffer(decoded, 2.5);
@@ -238,6 +230,7 @@ previewBtn.onclick = async () => {
   const targetLinear = Math.pow(10, targetDb / 20) * 0.95;
   const gainMult = targetLinear / peak;
   const finalBuf = applyGain(sped, gainMult);
+
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const sliceLen = Math.min(finalBuf.length, Math.floor(5 * finalBuf.sampleRate));
   const slice = ctx.createBuffer(finalBuf.numberOfChannels, sliceLen, finalBuf.sampleRate);
